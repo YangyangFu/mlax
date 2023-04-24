@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
+FROM ubuntu:22.04
 
 USER root
 ## add a conda for python 3 environment
@@ -55,20 +55,9 @@ RUN conda update conda && \
     conda clean -ya
 
 # Install jax ecosystem in cuda
-RUN conda install -c nvidia cuda-nvcc 
 RUN pip install --upgrade pip && \
-    pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html && \
-    pip install diffrax optax flax equinox tensorflow
-
-# install convex optimization package
-RUN pip install --upgrade pip && \
-    pip install cvxpy==1.3.0 diffcp cvxpylayers gymnasium==0.27.1
-
-# install probalistic programming package
-RUN conda update conda && \
-    conda config --add channels conda-forge && \
-    conda install numpyro && \
-    conda clean -ya
+    pip install --upgrade "jax[cuda12_pip]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html && \
+    pip install optax flax 
 
 # create user and render using X11 forwarding 
 RUN export uid=1000 gid=1000 && \
