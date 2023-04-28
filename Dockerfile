@@ -51,6 +51,7 @@ RUN conda update conda && \
     scipy \
     numpy \
     pandas \
+    scikit-learn \
     ipykernel && \
     conda clean -ya
 

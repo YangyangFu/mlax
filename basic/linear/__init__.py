@@ -1,0 +1,3 @@
+from .linear_regression import LinearRegression
+from .ridge_regression import RidgeRegression
+from .bayesian_linear_regression import BayesianLinearRegression
