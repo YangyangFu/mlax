@@ -17,7 +17,7 @@ class BayesianLinearRegression(BaseRegression):
     
     def fit(self, beta, w_mean_prior, w_var_prior, X, y):
         """
-        Bayesian linear regression
+        Updating parameters based on Bayesian linear regression
         
         Reference:
             Eq. (3.49-3.51) in Pattern Recognition and Machine Learning by Bishop
@@ -42,9 +42,10 @@ class BayesianLinearRegression(BaseRegression):
         Reference:
             Eq. (3.58) in Pattern Recognition and Machine Learning by Bishop
         """
-        y = w_mean.T @ X
-        
-        y_var = 1./beta + X.T @ w_var @ X
+        if w_mean.ndim == 1:
+            w_mean = w_mean.reshape(-1,1)
+        y = X @ w_mean
+        y_var = 1./beta + jnp.sum(X @ w_var * X, axis=1)
         y_std = jnp.sqrt(y_var)
         
-        return y, y_std
+        return y, y_std.reshape(-1,1)
