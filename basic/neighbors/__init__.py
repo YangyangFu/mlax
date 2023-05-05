@@ -1,1 +1,3 @@
 from .nearest_neighbors_classification import NearestNeighborsClassifier
+from .nearest_neighbors_density import NearestNeighborsDensity
+from .nearest_neighbors_regression import NearestNeighborsRegressor

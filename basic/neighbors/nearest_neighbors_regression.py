@@ -1,0 +1,2 @@
+class NearestNeighborsRegressor():
+    pass
