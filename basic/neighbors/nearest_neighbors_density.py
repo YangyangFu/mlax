@@ -1,6 +1,6 @@
 import jax
 import jax.numpy as jnp 
-from scipy.spatial.distance import cdist
+from basic.utils.distance import cdist
 
 class NearestNeighborsDensity():
     def predict(self, X_train, X_test, k):
@@ -11,8 +11,7 @@ class NearestNeighborsDensity():
         # Calculate the pairwise distances between test points and training points
         # using the SciPy cdist function (Euclidean distance by default)
         distances = cdist(X_test, X_train)
-        print(distances.shape)
-        
+
         # get the radius of the k nearest neighbors for each test point
         radius = jnp.sort(distances, axis=1)[:, k-1]
         

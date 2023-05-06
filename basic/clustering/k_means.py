@@ -1,6 +1,7 @@
+import jax
 import jax.numpy as jnp
 import jax.random as random
-from scipy.spatial.distance import cdist
+from basic.utils.distance import cdist
 
 class KMeans():
     
@@ -8,20 +9,28 @@ class KMeans():
         """Perform k-means clustering.
         
         """
-        
+        n_samples, n_features = X.shape
         I = jnp.eye(k)
-        # initialize centroids
-        centers = random.choice(rng_key, X, shape=(k,), replace=False)
-        
-        # this needs to be modified to use scan for jax.jit
-        # iterate until convergence
-        for _ in range(max_iter):
-            prev_centers = jnp.copy(centers)
-            # calculate distances between points and centroids
-            # TODO: this is a non-JAX library, which is not jittable- need reimplement the distance function using jnp
-            D = cdist(X, centers, metric='euclidean')
-            # assign points to the closest centroid
+
+        # check X data type in case of type casting error for images (unit8)
+        X = X.astype(jnp.float32)
+
+        # while loop in jax to support jit
+        # Define the condition function
+        def cond_fun(state):
+            iter_count, _, _, _ = state
+            return iter_count < max_iter
+
+        # Define the body function
+        def body_fun(state):
+            iter_count, centers, prev_centers, _ = state
+
+            # Calculate distances between points and centroids
+            D = cdist(X, centers)
+
+            # Assign points to the closest centroid
             cluster_index = jnp.argmin(D, axis=1)
+
             # one-hot encoding: each row is a point, each column is a cluster index as one-hot vector
             index = I[cluster_index]
             
@@ -30,11 +39,35 @@ class KMeans():
             # X: (n_samples, n_features) -> (n_samples, 1, n_features)
             # cluster_index: (n_samples, n_clusters) -> (n_samples, n_clusters, 1)
             centers = jnp.sum(X[:, None, :] * index[:, :, None], axis=0) / jnp.sum(index, axis=0)[:, None]
+
+            # Check for convergence
+            def true_fcn(_):
+                return max_iter 
             
-            if jnp.allclose(prev_centers, centers):
-                break
-                
-        return centers, cluster_index
+            def false_fcn(_):
+                return iter_count + 1
+            
+            iter_count = jax.lax.cond(jnp.allclose(prev_centers, centers), true_fcn, false_fcn, None)
+            
+            # the following code is discarded due to error in jit
+            #if jnp.allclose(prev_centers, centers):
+            #    iter_count = max_iter  # Set iter_count to max_iter to exit the loop
+            #else:
+            #    iter_count += 1
+
+            return iter_count, centers, jnp.copy(centers), cluster_index
+        
+        # Initial state
+        iter_count_init = 0
+        centers = random.choice(rng_key, X, shape=(k,), replace=False)
+        prev_centers_init = jnp.copy(centers)
+        cluster_index_init = jnp.zeros(n_samples, dtype=jnp.int32)  # Initial cluster_index with zeros
+        state_init = (iter_count_init, centers, prev_centers_init, cluster_index_init)
+
+        # Run the while loop
+        _, centers_final, _, cluster_index = jax.lax.while_loop(cond_fun, body_fun, state_init)
+
+        return centers_final, cluster_index
         
     
     def predict(self, X, centers, cluster_index):
@@ -42,7 +75,7 @@ class KMeans():
         
         """
         
-        D = cdist(X, centers, metric='euclidean')
+        D = cdist(X, centers)
         cluster_index = jnp.argmin(D, axis=1)
               
         return cluster_index

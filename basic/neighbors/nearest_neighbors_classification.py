@@ -1,7 +1,5 @@
 import jax.numpy as jnp 
-import jax.random as random
-from scipy.spatial.distance import cdist
-import jax 
+from basic.utils.distance import cdist
 
 class NearestNeighborsClassifier:
     def predict(self, X_train,y_train, X_test, k):
