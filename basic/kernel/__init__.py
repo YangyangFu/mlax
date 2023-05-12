@@ -1,0 +1,2 @@
+from .kernel import Polynomial, RadialBasisFunction
+from .gaussian_process_regression import GaussianProcessRegression
