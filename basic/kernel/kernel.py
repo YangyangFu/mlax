@@ -1,5 +1,24 @@
 from jax import vmap
 import jax.numpy as jnp
+
+class Linear():
+    def _kernel(self, params, x, x_prime):
+        """_summary_
+
+        Args:
+            x (jnp.array, (D,)): input vector
+            x_prime (jnp.array, (D,)): input vector
+
+        Returns:
+            float: scalar output of linear kernel on two vectors
+        """
+        del params 
+
+        return jnp.dot(x,x_prime)
+    
+    def kernel(self, params, x, x_prime):
+        return vmap(vmap(self._kernel, in_axes=(None, None, 0)),
+                    in_axes=(None, 0, None))(params, x, x_prime)
  
 class Polynomial():
     def _kernel(self, params, x, x_prime):
