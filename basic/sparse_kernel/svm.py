@@ -8,10 +8,20 @@ class BinarySVC():
     """ Support Vector Machine Binary Classifier
      
     """
-    kernel = Linear()
-    kernel_params = None
-    C = 2.0
-    tolerance = 1e-6
+    
+    def __init__(self, kernel=Linear(), kernel_params=None, C=2.0, tolerance=1e-6):
+        """init
+        
+        Args:
+            kernel (function): kernel function
+            kernel_params (dict): kernel parameters
+            C (float): regularization parameter
+            tolerance (float): tolerance for numerical stability
+        """
+        self.kernel = kernel
+        self.kernel_params = kernel_params
+        self.C = C
+        self.tolerance = tolerance
 
     def fit(self, X, t):
         """fit model to data
@@ -92,6 +102,10 @@ class BinarySVC():
             $$ wx = w^Tx^T = \beta^T x x^T = \beta^T K$$
             
         """
+        y = self.distance(X_test, X_train, y_train, beta, sv_index)
+        return jnp.sign(y)
+
+    def distance(self, X_test, X_train, y_train, beta, sv_index):
         # get wx
         Gram = self.kernel.kernel(self.kernel_params, X_train[sv_index], X_test)
         wx = beta[sv_index].T @ Gram 
@@ -110,13 +124,5 @@ class BinarySVC():
                     
         bv = set_nonmargin_to_zero(y_train[sv_index] - Gram_S @ beta[sv_index], M_mask)
         b = get_nonzero_mean(bv)
-
-        # This version is not jittable, and seems slightly different for the final b
-        # b1 
-        #Gram_M = kernel.kernel(kernel_params, X_train[sv][M_mask], X_train[sv]) # (M, S)
-        #bv1 = y_train[sv][M_mask] - Gram_M @ beta[sv]
-        #b1 = jnp.mean(bv1)
-        #print(bv1.shape, b1, bv1)
-        #print(b)
-        # retur signs of wx + b: 1 or -1
-        return jnp.sign(wx + b)
+        
+        return wx+b
