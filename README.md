@@ -28,7 +28,9 @@ The main reference is [Pattern Recognition and Machine Learning](https://www.mic
     - Support vector machine
     - Relevance vector machine
   - Graphical models 
-    - Bayesian Networks  
+    - Bayesian networks
+    - Markov models
+    - Linear dynamical systems
 - Unsupervised Learning 
   - Mixture models
     - k-means
@@ -37,5 +39,8 @@ The main reference is [Pattern Recognition and Machine Learning](https://www.mic
   - Variational inference
   - Principle components analysis
   - Self-supervised learning
-
+- Combing Models
+  - Bayesian averaging 
+  - Bagging
+  - Boosting 
 
