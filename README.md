@@ -11,18 +11,31 @@ The main reference is [Pattern Recognition and Machine Learning](https://www.mic
 - maybe add a table for all models: discriminative vs generative, parametric vs nonparametric, etc
 
 ## Work Scope
-
-- Linear Model for Regression
-- Linear Model for Classification
-- Kernel Methods
-- Spare Kernel Methods
-- Mixture Models and Expectation Maximization
-- Approximate Inference
-- Sampling Methods
-- Continuous Latent Variables
-- Linear Dynamical System
-- Combining Models
-- Neural Networks
-  - Autodiff Implementation
+- Inference and Decision Produre
+- Generalization and Regularization
+- Supervised Learning
+  - Linear regression
+  - Logistic regression
+  - Bayesian linear regression
+  - Bayesian logistic regression
+  - Generalized linear model
+  - Generative models for classification
+    - Gaussian discriminant analysis
+    - Naive Bayes
+  - Kernel methods
+    - Gaussian process
+  - Sparse kernel methods
+    - Support vector machine
+    - Relevance vector machine
+  - Graphical models 
+    - Bayesian Networks  
+- Unsupervised Learning 
+  - Mixture models
+    - k-means
+    - Gaussian mixture
+    - Expectation maximization algorithm 
+  - Variational inference
+  - Principle components analysis
+  - Self-supervised learning
 
 
