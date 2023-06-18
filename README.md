@@ -44,3 +44,9 @@ The main reference is [Pattern Recognition and Machine Learning](https://www.mic
   - Bagging
   - Boosting 
 
+
+## Export
+To export to pdf, run the following command in the terminal
+```
+jupyter nbconvert --to pdf xxx.ipynb
+```
